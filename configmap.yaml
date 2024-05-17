@@ -1,0 +1,16 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: create-backend-config
+spec:
+  template:
+    spec:
+      containers:
+      - name: create-backend-config
+        image: bitnami/kubectl
+        command: ["/bin/sh", "-c"]
+        args:
+        - |
+          BACKEND_IP=$(kubectl get svc backend-service -o jsonpath='{.status.loadBalancer.ingress[0].hostname}');
+          kubectl create configmap backend-config --from-literal=BACKEND_URL=http://$BACKEND_IP:9090 --dry-run=client -o yaml | kubectl apply -f -
+      restartPolicy: OnFailure
