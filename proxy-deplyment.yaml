@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: proxy-server-deployment
+  labels:
+    app: proxy-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: proxy-server
+  template:
+    metadata:
+      labels:
+        app: proxy-server
+    spec:
+      containers:
+      - name: proxy-server
+        image: sorrykim/backup-proxy:last3
+        imagePullPolicy: Always  # 이미지 항상 새로 받기
+        ports:
+        - containerPort: 3000
+        volumeMounts:
+        - name: tls-certs
+          mountPath: /etc/ssl/certs
+          readOnly: true
+        - name: tls-keys
+          mountPath: /etc/ssl/private
+          readOnly: true
+      volumes:
+      - name: tls-certs
+        secret:
+          secretName: tls-secret
+      - name: tls-keys
+        secret:
+          secretName: tls-secret
