@@ -14,6 +14,6 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: sorrykim/backup-frontend:last1
+        image: sorrykim/backup-frontend:last2
         ports:
         - containerPort: 3000
